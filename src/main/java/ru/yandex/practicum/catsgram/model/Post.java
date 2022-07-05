@@ -27,6 +27,16 @@ public class Post {
         return description;
     }
 
+    @Override
+    public String toString() {
+        return "Post{" +
+                "author='" + author + '\'' +
+                ", creationDate=" + creationDate +
+                ", description='" + description + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                '}';
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
