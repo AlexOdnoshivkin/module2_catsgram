@@ -1,9 +1,13 @@
 package ru.yandex.practicum.catsgram.model;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.Objects;
 
 public class User {
+    @Email
+    @NotBlank
     private String email;
     private String nickname;
     private LocalDate birthdate;
