@@ -13,18 +13,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PostService {
-    @Autowired
     private final UserService userService;
+    private final Map<Integer,Post> posts = new HashMap<>();
+    @Autowired
     public PostService(UserService userService) {
         this.userService = userService;
     }
-    private final Map<Integer,Post> posts = new HashMap<>();
 
-    public List<Post> findAll() {
-        return new ArrayList<>(posts.values());
+    public List<Post> findAll(String sort, int size, int page) {
+        if (sort.equals("asc")) {
+            return posts.values().stream()
+                    .sorted((Post p1, Post p2) -> (int) (p1.getCreationDate().toEpochMilli() - p2.getCreationDate().toEpochMilli()))
+                    .skip((long) size * (page - 1))
+                    .limit(size)
+                    .collect(Collectors.toList());
+
+        } else {
+            return posts.values().stream()
+                    .sorted((Post p1, Post p2) -> (int) (p2.getCreationDate().toEpochMilli() - p1.getCreationDate().toEpochMilli()))
+                    .skip((long) size * (page - 1))
+                    .limit(size)
+                    .collect(Collectors.toList());
+        }
     }
 
     public Post findPostById(String id) {

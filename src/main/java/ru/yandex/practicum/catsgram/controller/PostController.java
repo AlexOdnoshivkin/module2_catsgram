@@ -17,9 +17,12 @@ public class PostController {
     }
 
     @GetMapping({"/posts", "/posts/{id}"})
-    public List<Post> findAll(@PathVariable(required = false) String id) {
+    public List<Post> findAll(@PathVariable(required = false) String id,
+                              @RequestParam(defaultValue = "asc") String sort,
+                              @RequestParam(defaultValue = "100") int size,
+                              @RequestParam(defaultValue = "1") int page) {
         if (id == null) {
-            return postService.findAll();
+            return postService.findAll(sort, size, page);
         } else {
            return List.of(postService.findPostById(id));
         }
