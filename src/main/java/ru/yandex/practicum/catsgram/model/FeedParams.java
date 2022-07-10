@@ -30,4 +30,16 @@ public class FeedParams {
     public List<String> getFriendsEmails() {
         return friendsEmails;
     }
+
+    public static class ErrorResponse {
+        private final String error;
+
+        public ErrorResponse(String error) {
+            this.error = error;
+        }
+        public String getError() {
+            return error;
+        }
+
+    }
 }

@@ -2,8 +2,8 @@ package ru.yandex.practicum.catsgram.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.catsgram.exception.PostNotFoundException;
-import ru.yandex.practicum.catsgram.exception.UserNotFoundException;
+import ru.yandex.practicum.catsgram.exceptions.PostNotFoundException;
+import ru.yandex.practicum.catsgram.exceptions.UserNotFoundException;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.User;
 

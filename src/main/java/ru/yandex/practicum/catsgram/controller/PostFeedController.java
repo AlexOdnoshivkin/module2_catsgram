@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.catsgram.exceptions.IncorrectParameterException;
 import ru.yandex.practicum.catsgram.model.FeedParams;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
@@ -25,13 +26,15 @@ public class PostFeedController {
 
     @PostMapping
     List<Post> getFriendsFeed(@RequestBody FeedParams feedParams) {
-        if (!SORTS.contains(feedParams.getSort()) || feedParams.getFriendsEmails().isEmpty()) {
-            throw new IllegalArgumentException();
+        if (!SORTS.contains(feedParams.getSort())) {
+            throw new IncorrectParameterException("sort", "Указан неферный формат сортировки");
+        }
+        if (feedParams.getFriendsEmails().isEmpty()) {
+            throw new IncorrectParameterException("friendsEmails", "Список друзей не может быть пустым");
         }
         if (feedParams.getSize() == null || feedParams.getSize() <= 0) {
-            throw new IllegalArgumentException();
+            throw new IncorrectParameterException("size", "Параметр size должен быть больше нуля");
         }
-
         List<Post> result = new ArrayList<>();
         for (String friendEmail : feedParams.getFriendsEmails()) {
             result.addAll(postService.findAllByUserEmail(friendEmail, feedParams.getSize(), feedParams.getSort()));
