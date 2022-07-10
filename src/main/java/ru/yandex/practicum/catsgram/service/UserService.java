@@ -1,53 +1,51 @@
 package ru.yandex.practicum.catsgram.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.catsgram.controller.UserController;
-import ru.yandex.practicum.catsgram.exceptions.InvalidEmailException;
-import ru.yandex.practicum.catsgram.exceptions.UserAlreadyExistException;
-import ru.yandex.practicum.catsgram.exceptions.UserNotFoundException;
+import ru.yandex.practicum.catsgram.exception.InvalidEmailException;
+import ru.yandex.practicum.catsgram.exception.UserAlreadyExistException;
 import ru.yandex.practicum.catsgram.model.User;
 
-import javax.validation.Valid;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private final Map<String, User> users = new HashMap<>();
 
-    private final Map<String,User> users = new HashMap<>();
+    public Collection<User> findAll() {
+        return users.values();
+    }
 
-    public List<User> findAll() {
-        log.debug("Количество пользователей: " + users.size());
-        return new ArrayList<>(users.values());
+    public User createUser(User user) {
+        checkEmail(user);
+        if (users.containsKey(user.getEmail())) {
+            throw new UserAlreadyExistException(String.format(
+                    "Пользователь с электронной почтой %s уже зарегистрирован.",
+                    user.getEmail()
+            ));
+        }
+        users.put(user.getEmail(), user);
+        return user;
+    }
+
+    public User updateUser(User user) {
+        checkEmail(user);
+        users.put(user.getEmail(), user);
+
+        return user;
     }
 
     public User findUserByEmail(String email) {
-        if (!users.containsKey(email)) {
-            throw new UserNotFoundException("Пользователь " + email + " не найден");
+        if (email == null) {
+            return null;
         }
         return users.get(email);
     }
 
-    public User create(@Valid User user) throws UserAlreadyExistException {
-        if (users.containsKey(user.getEmail())) {
-            throw new UserAlreadyExistException("Такой пользователь уже существует");
+    private void checkEmail(User user) {
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
         }
-        log.debug("Добавлен пользователь: " + user);
-        users.put(user.getEmail(), user);
-        return user;
-    }
-
-    public User updateUser(@Valid User user) throws UserNotFoundException {
-        if (!users.containsKey(user.getEmail())) {
-            throw new UserNotFoundException("Пользователь не найден");
-        }
-        if (user.getEmail() == null) {
-            throw new InvalidEmailException("Поле email не может быть пустым");
-        }
-        log.debug("Обновлены данные пользователя {}", user);
-        users.put(user.getEmail(), user);
-        return user;
     }
 }

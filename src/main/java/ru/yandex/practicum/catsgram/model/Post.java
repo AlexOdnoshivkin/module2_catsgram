@@ -3,8 +3,8 @@ package ru.yandex.practicum.catsgram.model;
 import java.time.Instant;
 
 public class Post {
-    private final int id;
-    private static int count;
+
+    private Integer id;
     private final String author; // автор
     private final Instant creationDate = Instant.now(); // дата создания
     private String description; // описание
@@ -14,7 +14,14 @@ public class Post {
         this.author = author;
         this.description = description;
         this.photoUrl = photoUrl;
-        id = count++;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getAuthor() {
@@ -27,20 +34,6 @@ public class Post {
 
     public String getDescription() {
         return description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return "Post{" +
-                "author='" + author + '\'' +
-                ", creationDate=" + creationDate +
-                ", description='" + description + '\'' +
-                ", photoUrl='" + photoUrl + '\'' +
-                '}';
     }
 
     public void setDescription(String description) {
