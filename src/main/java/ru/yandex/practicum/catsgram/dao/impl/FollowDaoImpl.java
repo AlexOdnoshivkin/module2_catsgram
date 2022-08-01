@@ -48,7 +48,7 @@ public class FollowDaoImpl implements FollowDao {
         return authors.stream()
                 .map(postDao::findPostsByUser)
                 .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(Post::getCreationDate))
+                .sorted(Comparator.comparing(Post::getCreationDate).reversed())
                 .limit(max)
                 .collect(Collectors.toList());
     }
