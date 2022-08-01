@@ -9,6 +9,7 @@ import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.User;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -25,5 +26,19 @@ public class PostService {
                 .orElseThrow(() ->new UserNotFoundException("Пользователь с идентификатором " + userId + " не найден."));
 
         return postDao.findPostsByUser(user);
+    }
+
+    public Collection<Post> findPostsByUser(String authorId, Integer size, String sort) {
+        return findPostsByUser(authorId)
+                .stream()
+                .sorted((p0, p1) -> {
+                    int comp = p0.getCreationDate().compareTo(p1.getCreationDate()); //прямой порядок сортировки
+                    if (sort.equals("desc")) {
+                        comp = -1 * comp; //обратный порядок сортировки
+                    }
+                    return comp;
+                })
+                .limit(size)
+                .collect(Collectors.toList());
     }
 }

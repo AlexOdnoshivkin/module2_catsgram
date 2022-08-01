@@ -44,17 +44,4 @@ public class PostFeedController {
         return result;
     }
 
-    public Collection<Post> findPostsByUser(String authorId, Integer size, String sort) {
-        return findPostsByUser(authorId)
-                .stream()
-                .sorted((p0, p1) -> {
-                    int comp = p0.getCreationDate().compareTo(p1.getCreationDate()); //прямой порядок сортировки
-                    if (sort.equals("desc")) {
-                        comp = -1 * comp; //обратный порядок сортировки
-                    }
-                    return comp;
-                })
-                .limit(size)
-                .collect(Collectors.toList());
-    }
 }
