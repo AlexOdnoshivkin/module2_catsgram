@@ -10,7 +10,9 @@ import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.catsgram.Constants.SORTS;
 
@@ -37,8 +39,22 @@ public class PostFeedController {
         }
         List<Post> result = new ArrayList<>();
         for (String friendEmail : feedParams.getFriendsEmails()) {
-            result.addAll(postService.findAllByUserEmail(friendEmail, feedParams.getSize(), feedParams.getSort()));
+            result.addAll(postService.findPostsByUser(friendEmail, feedParams.getSize(), feedParams.getSort()));
         }
         return result;
+    }
+
+    public Collection<Post> findPostsByUser(String authorId, Integer size, String sort) {
+        return findPostsByUser(authorId)
+                .stream()
+                .sorted((p0, p1) -> {
+                    int comp = p0.getCreationDate().compareTo(p1.getCreationDate()); //прямой порядок сортировки
+                    if (sort.equals("desc")) {
+                        comp = -1 * comp; //обратный порядок сортировки
+                    }
+                    return comp;
+                })
+                .limit(size)
+                .collect(Collectors.toList());
     }
 }
